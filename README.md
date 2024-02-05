@@ -21,16 +21,18 @@ Feel free to use this for any of your own public projects, blogs, or videos. If 
 
 ## Instructions  
 1. Clone the code to your terminal running VS Code.  
-2. Create an ssh key: `ssh-keygen -t rsa`  
-3. Install the Remote-SSH extension in VS Code: https://code.visualstudio.com/docs/remote/ssh   
-4. Modify the `terraform.tfvars` file with your values. Minikube will run best with a t3.medium or higher EC2 instance with at least 20Gib of storage. **This will cost money!**  
-5. *Optional* Modify the `userdata.tpl` script to provide any custom userdata to your instance.   
-6. `terraform init`  
-7. `terraform plan`  
-8. `terraform apply`  
-9. Use `CTRL+P` in VS Code, search for the `Remote-SSH` extension, and then choose the IP address output from the Terraform script.  
-10. Follow the prompts to open a new VS Code window that will connect to your instance and provide your very own K8s Sandbox.  
-11. `terraform destroy` to destroy your infrastructure when you're finished.  
+3. Create an ssh key: `ssh-keygen -t rsa`  
+4. Install the Remote-SSH extension in VS Code: https://code.visualstudio.com/docs/remote/ssh   
+5. Modify the `terraform.tfvars` file with your values, including `host_os` which will be `windows` or `linux` (for MacOS or Linux). Minikube will run best with a t3.medium or higher EC2 instance with at least 20Gib of storage. **This will cost money!**  
+6. *Optional*: Modify the `userdata.tpl` script to provide any custom userdata to your instance.   
+7. `terraform init`  
+8. `terraform plan`  
+9. `terraform apply`  
+10. Use `CTRL+P` in VS Code, search for the `Remote-SSH` extension, and then choose the IP address output from the Terraform script.  
+11. Follow the prompts to open a new VS Code window that will connect to your instance and provide your very own K8s Sandbox.
+12. Once you're connected, you may need to add your user to the Docker group: `sudo usermod -aG docker $USER && newgrp docker`
+13. Run `minikube start` to start Minikube and get your Kubernetes cluster up and running. 
+14. `terraform destroy` to destroy your infrastructure when you're finished.  
 
 ## FAQ  
 **Q: You're a Terraform expert; why didn't you use modules?**  
