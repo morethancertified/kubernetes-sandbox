@@ -11,4 +11,4 @@ public_key_location    = "~/.ssh/mtckey.pub"
 private_key_location = "~/.ssh/mtckey"
 ec2_user = "ubuntu"
 instance_type = "t3.medium"
-instance_storage = 30
+instance_storage = 20
