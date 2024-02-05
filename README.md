@@ -1,7 +1,7 @@
 # kubernetes-sandbox
 A Terraform deployment for an EC2 instance with Minikube installed that outputs the connection script to VS Code for an automagic Kubernetes Sandbox. 
 
-Based on the FREE Build a Dev Environment with AWS and Terraform course:  
+**Based on the FREE Build a Dev Environment with AWS and Terraform course:**  
 **More than Certified Website:** https://courses.morethancertified.com/p/rfp-terraform  
 **YouTube Playlist:** https://www.youtube.com/watch?v=wZoEpn6DwmY&list=PL5_Rrj9tYQAlgX9bTzlTN0WzU67ZeoSi_  
 
