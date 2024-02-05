@@ -1,5 +1,15 @@
+locals {
+  subnet_cidr       = cidrsubnet("${var.vpc_cidr}", 8, 1)
+  availability_zone = data.aws_availability_zones.available.names[0]
+}
+
+resource "random_id" "random" {
+  byte_length = 2
+}
+
+
 resource "aws_vpc" "mtc_vpc" {
-  cidr_block           = "10.123.0.0/16"
+  cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
 
@@ -10,9 +20,9 @@ resource "aws_vpc" "mtc_vpc" {
 
 resource "aws_subnet" "mtc_public_subnet" {
   vpc_id                  = aws_vpc.mtc_vpc.id
-  cidr_block              = "10.123.1.0/24"
+  cidr_block              = local.subnet_cidr
   map_public_ip_on_launch = true
-  availability_zone       = "us-west-2a"
+  availability_zone       = local.availability_zone
 
   tags = {
     Name = "dev-public"
@@ -54,7 +64,7 @@ resource "aws_security_group" "mtc_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.user_ip]
   }
 
   egress {
@@ -66,12 +76,12 @@ resource "aws_security_group" "mtc_sg" {
 }
 
 resource "aws_key_pair" "mtc_auth" {
-  key_name   = "mtckey2"
-  public_key = file("~/.ssh/mtckey.pub")
+  key_name   = "${var.key_name}-${random_id.random.dec}"
+  public_key = file(var.public_key_location)
 }
 
 resource "aws_instance" "dev_node" {
-  instance_type          = "t2.micro"
+  instance_type          = var.instance_type
   ami                    = data.aws_ami.server_ami.id
   key_name               = aws_key_pair.mtc_auth.id
   vpc_security_group_ids = [aws_security_group.mtc_sg.id]
@@ -79,7 +89,7 @@ resource "aws_instance" "dev_node" {
   user_data              = file("userdata.tpl")
 
   root_block_device {
-    volume_size = 10
+    volume_size = var.instance_storage
   }
 
   tags = {
@@ -88,9 +98,11 @@ resource "aws_instance" "dev_node" {
 
   provisioner "local-exec" {
     command = templatefile("${var.host_os}-ssh-config.tpl", {
-      hostname = self.public_ip,
-      user     = "ubuntu",
-    identityfile = "~/.ssh/mtckey" })
+      hostname            = self.public_ip,
+      user                = var.ec2_user,
+      identityfile        = var.private_key_location
+      ssh_config_location = var.ssh_config_location
+    })
     interpreter = var.host_os == "windows" ? ["Powershell", "-Command"] : ["bash", "-c"]
   }
 }

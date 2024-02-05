@@ -7,6 +7,12 @@ terraform {
 }
 
 provider "aws" {
-  region  = "us-west-2"
-  profile = "mtcadmin"
+  region = var.region
+  profile = var.credentials_profile
+  default_tags {
+    tags = {
+      Environment = var.environment_tag
+      Project     = var.project_tag
+    }
+  }
 }

@@ -7,3 +7,7 @@ data "aws_ami" "server_ami" {
     values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
   }
 }
+
+data "aws_availability_zones" "available" {
+  state = "available"
+}
